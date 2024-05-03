@@ -1,42 +1,25 @@
-import { createServer } from 'http';
-import { readFile } from 'fs';
+const express = require('express');
+const path = require('path');
 
-createServer((req, res) => {
-  switch (req.url) {
-    case '/':
-      readFile('./index.html', 'utf8', (err, data) => {
-        if (err) {
-          throw new Error(err);
-        }
-        res.writeHead(200, { 'Content-Type': 'text/html' });
-        res.end(data);
-      });
-      break;
-    case '/about':
-      readFile('./about.html', 'utf8', (err, data) => {
-        if (err) {
-          throw new Error(err);
-        }
-        res.writeHead(200, { 'Content-Type': 'text/html' });
-        res.end(data);
-      });
-      break;
-    case '/contact-me':
-      readFile('./contact-me.html', 'utf8', (err, data) => {
-        if (err) {
-          throw new Error(err);
-        }
-        res.writeHead(200, { 'Content-Type': 'text/html' });
-        res.end(data);
-      });
-      break;
-    default:
-      readFile('./404.html', 'utf-8', (err, data) => {
-        if (err) {
-          throw new Error(err);
-        }
-        res.writeHead(404, { 'Content-Type': 'text/html' });
-        res.end(data);
-      });
-  }
-}).listen(8080);
+const app = express();
+const port = 3000;
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '/index.html'));
+});
+
+app.get('/about', (req, res) => {
+  res.sendFile(path.join(__dirname, '/about.html'));
+});
+
+app.get('/contact-me', (req, res) => {
+  res.sendFile(path.join(__dirname, '/contact-me.html'));
+});
+
+app.use((req, res) => {
+  res.status(404).sendFile(path.join(__dirname, '/404.html'));
+});
+
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}!`);
+});
